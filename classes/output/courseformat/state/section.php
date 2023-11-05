@@ -15,7 +15,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace format_flexsections\output\courseformat\state;
-use format_flexsections\constants;
 
 /**
  * Contains the ajax update section structure.
@@ -36,15 +35,14 @@ class section extends \core_courseformat\output\local\state\section {
      * @return \stdClass data context for a mustache template
      */
     public function export_for_template(\renderer_base $output): \stdClass {
-        /** @var \stdClass $data */
         $data = parent::export_for_template($output);
         $data->parent = $this->section->parent;
         $data->parentid = $this->section->parent ? $this->format->get_modinfo()->get_section_info($this->section->parent)->id : 0;
+        $data->collapsed = (bool)$this->section->collapsed;
 
         // For sections that are displayed as a link do not print list of cms or controls.
         $showaslink = $this->section->collapsed == FORMAT_FLEXSECTIONS_COLLAPSED
             && $this->format->get_viewed_section() != $this->section->section;
-        $data->showaslink = $showaslink;
         $data->children = [];
         if ($this->section->section) {
             foreach ($this->format->get_modinfo()->get_section_info_all() as $s) {
@@ -56,8 +54,37 @@ class section extends \core_courseformat\output\local\state\section {
         }
         $data->haschildren = !empty($data->children);
         $data->singlesection = (int)($this->section->collapsed && $this->section->section == $this->format->get_viewed_section());
-        $courseindex = $this->format->get_course_index_display();
-        $data->hidecmsinindex = ($courseindex == constants::COURSEINDEX_SECTIONS);
+
+
+        $format = $this->format;
+        $preferences = $format->get_sections_preferences();
+
+        // PTL-9728.
+        if (!empty($preferences)) {
+
+            //$data->indexcollapsed = true;
+            //if (isset($preferences[$this->section->id])) {
+            //    $sectionpreferences = $preferences[$this->section->id];
+            //
+            //    if (!isset($sectionpreferences->indexcollapsed)) {
+            //        $data->indexcollapsed = false;
+            //    }
+            //}
+
+            $collapsedsections = $format->get_custom_sections_preferences();
+            $data->indexcollapsed = in_array($this->section->id, $collapsedsections) ? true : false;
+        }else{
+            $count = 0;
+            $arropened = [];
+            foreach ($this->format->get_modinfo()->get_section_info_all() as $item) {
+                if ($count == 0) {
+                    $arropened[] = $item->section;
+                }
+                $count++;
+            }
+
+            $data->indexcollapsed = in_array($this->section->section, $arropened) ? false : true;
+        }
 
         return $data;
     }

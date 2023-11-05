@@ -1,0 +1,25 @@
+<form class="container-fluid" action="" id="upload_image_form_{{uniqueid}}" method="post"
+    enctype="multipart/form-data">
+    <input type="hidden" name="type" value="{{type}}">
+    <input type="hidden" name="courseid" value="{{courseid}}">
+    <input type="hidden" name="sectionid" value="{{sectionid}}">
+
+    {{{uploadhtml}}}
+
+    <div class="modal-footer">
+        <button class="btn btn-outline-secondary uploadimageclose" type="button">
+            {{#str}}cancel, format_flexsections{{/str}}
+        </button>
+
+        <button type="button" class="btn btn-success submited uploadimagesubmit">
+            <div class="spinner-border spinner-border-sm modalspinner d-none" role="status"></div>
+            <span>{{#str}}upload, format_flexsections{{/str}}</span>
+        </button>
+    </div>
+</form>
+
+{{#js}}
+    require(['format_flexsections/uploadimagepopup'], function(uploadpopup) {
+        uploadpopup.init('{{uniqueid}}');
+    });
+{{/js}}

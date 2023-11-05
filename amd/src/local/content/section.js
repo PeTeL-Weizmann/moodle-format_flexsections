@@ -29,15 +29,10 @@ export default class extends Section {
     /**
      * Register state values and the drag and drop subcomponent.
      *
-     * @param {BaseComponent} headerComponent section header component
+     * @param {BaseComponent} sectionitem section item component
      */
-    configDragDrop(headerComponent) {
-        super.configDragDrop(headerComponent);
-        // Disable drag and drop for the sections, it does not really work yet.
-        setTimeout(() => {
-            if (typeof headerComponent.dragdrop.parent.getDraggableData === 'function') {
-                headerComponent.dragdrop.setDraggable(false);
-            }
-        }, 1500);
+    configDragDrop(sectionitem) {
+        sectionitem.draggable = false; // <---- my modification - disable drag&drop of sections for now.
+        super.configDragDrop(sectionitem);
     }
 }

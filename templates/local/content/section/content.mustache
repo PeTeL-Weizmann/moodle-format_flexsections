@@ -38,7 +38,7 @@
                             "cmname": {"displayvalue": "<a class=\"aalink\" href=\"#\"><span class=\"instancename\">Forum example</span></a>"},
                             "hasname": "true"
                         },
-                        "cmid": 3,
+                        "id": 3,
                         "module": "forum",
                         "anchor": "activity-3",
                         "extraclasses": "newmessages"
@@ -50,7 +50,7 @@
                             "cmname": {"displayvalue": "<a class=\"aalink\" href=\"#\"><span class=\"instancename\">Another forum</span></a>"},
                             "hasname": "true"
                         },
-                        "cmid": 4,
+                        "id": 4,
                         "anchor": "activity-4",
                         "module": "assign",
                         "extraclasses": ""
@@ -89,19 +89,125 @@
 <div>
 {{/testingonly-make-mustache-lint-happy}}
 
-{{< core_courseformat/local/content/section/content }}
+{{#header}}
+{{$ core_courseformat/local/content/section/header }}
+    {{> core_courseformat/local/content/section/header }}
+{{/ core_courseformat/local/content/section/header }}
+{{/header}}
 
-    {{$ core_courseformat/local/content/section/header }}
-        {{> format_flexsections/local/content/section/header }}
-    {{/ core_courseformat/local/content/section/header }}
+{{#restrictionlock}}
+    <div class="align-self-center ml-2">
+        {{#pix}}t/unlock, core{{/pix}}
+    </div>
+{{/restrictionlock}}
+<div data-region="sectionbadges" class="sectionbadges d-flex align-items-center">
+    {{$ core_courseformat/local/content/section/badges }}
+        {{> core_courseformat/local/content/section/badges }}
+    {{/ core_courseformat/local/content/section/badges }}
+</div>
 
-{{/ core_courseformat/local/content/section/content }}
+{{#sectioncompletion}}
+    <div class="coursecompletion ml-auto">
+        <div class="progress-wrapper p-2">
+            {{#iscomplete}}
+                <span class="sr-only">{{#str}} completed, core {{/str}}</span>
+            {{/iscomplete}}
+            <div class="progress mb-2">
+                <div class="progress-bar bg-linkhover" role="progressbar" style="width: {{percentage}}%"
+                     aria-valuenow="{{percentage}}" aria-valuemin="0" aria-valuemax="100">
+                </div>
+            </div>
+            <p class="text-primary mb-0">
+                {{#showpercentage}}
+                    {{#str}} course:completion:percentage, format_flexsections, { "percentage":
+                        {{#quote}}{{percentage}}{{/quote}} } {{/str}}
+                {{/showpercentage}}
+                {{#showcount}}
+                    {{#str}} course:completion:count, format_flexsections, { "completed": {{#quote}}{{completed}}{{/quote}},
+                        "total": {{#quote}}{{total}}{{/quote}} } {{/str}}
+                {{/showcount}}
+            </p>
+        </div>
+    </div>
+{{/sectioncompletion}}
+
+
+{{#collapsemenu}}
+<div class="flex-fill d-flex justify-content-end mr-2 align-self-start mt-2">
+    <a
+        id="collapsesections"
+        class="section-collapsemenu"
+        href="#"
+        aria-expanded="true"
+        role="button"
+        data-toggle="toggleall"
+    >
+        <span class="collapseall text-nowrap">{{#str}}collapseall{{/str}}</span>
+        <span class="expandall text-nowrap">{{#str}}expandall{{/str}}</span>
+    </a>
+    </div>
+{{/collapsemenu}}
+
+{{#hassharebutton}}
+    <div class="ml-auto" data-region="share-button-section-area" data-sectionid="{{id}}"></div>
+{{/hassharebutton}}
+
+{{#controlmenu}}
+    {{$ core_courseformat/local/content/section/controlmenu }}
+        {{> core_courseformat/local/content/section/controlmenu }}
+    {{/ core_courseformat/local/content/section/controlmenu }}
+{{/controlmenu}}
+
+
+</div>
+<div id="coursecontentcollapse{{num}}"
+    class="content {{^iscoursedisplaymultipage}}
+        {{^sitehome}}course-content-item-content course-section-level-0 collapse p-3 {{^contentcollapsed}}show{{/contentcollapsed}}{{/sitehome}}
+    {{/iscoursedisplaymultipage}}">
+    <div class="{{#hasavailability}}description{{/hasavailability}} mb-3 px-3" data-for="sectioninfo">
+    {{#summary}}
+        {{$ core_courseformat/local/content/section/summary }}
+            {{> core_courseformat/local/content/section/summary }}
+        {{/ core_courseformat/local/content/section/summary }}
+    {{/summary}}
+    {{#availability}}
+        {{$ core_courseformat/local/content/section/availability }}
+            {{> core_courseformat/local/content/section/availability }}
+        {{/ core_courseformat/local/content/section/availability }}
+    {{/availability}}
+</div>
+{{#cmsummary}}
+    {{$ core_courseformat/local/content/section/cmsummary }}
+        {{> core_courseformat/local/content/section/cmsummary }}
+    {{/ core_courseformat/local/content/section/cmsummary }}
+{{/cmsummary}}
+<div data-cmlistid = "{{id}}" class="">
+    {{#lazyload}}
+    <div class="loading">
+        <i class="fa-solid fa-sync fa-spin"></i>
+        <span class="pl-2">
+            {{#str}} loading, format_flexsections {{/str}}
+        </span>
+    </div>
+    {{/lazyload}}
+{{#cmlist}}
+    {{$ format_flexsections/local/content/section/cmlist }}
+        {{> format_flexsections/local/content/section/cmlist }}
+    {{/ format_flexsections/local/content/section/cmlist }}
+{{/cmlist}}
+</div>
+{{{cmcontrols}}}
+{{#insertafter}}
+    {{#numsections}}
+        {{$ core_courseformat/local/content/addsection}}
+            {{> core_courseformat/local/content/addsection}}
+        {{/ core_courseformat/local/content/addsection}}
+    {{/numsections}}
+{{/insertafter}}
+
 
 {{^showaslink}}
 <ul class="flexsections-level-{{level}}" data-for="course_subsectionlist" data-parent="{{id}}">
-    {{#insertsubsection}}
-        {{> format_flexsections/local/content/addsection}}
-    {{/insertsubsection}}
     {{#subsections}}
         {{> format_flexsections/local/content/section }}
     {{/subsections}}
@@ -111,3 +217,18 @@
 {{#testingonly-make-mustache-lint-happy}}
 </div>
 {{/testingonly-make-mustache-lint-happy}}
+
+{{#js}}
+    if($('.activitytitle')[0]) {
+        function hideToolTip() {
+            if(!$('.tooltip')[0]) return
+            const isHovered = !!$('.activitytitle').filter(function() { return $(this).is(":hover"); }).length
+            if(!isHovered) $('.tooltip').remove()
+        }
+        $("body")[0].addEventListener('mousemove', hideToolTip)
+        $("#page")[0].addEventListener('scroll', () => {
+            if(!$('.tooltip')[0]) return
+            $('.tooltip').remove()
+        })
+    }
+{{/js}}

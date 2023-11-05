@@ -1,120 +1,311 @@
 {{!
-    This file is part of Moodle - http://moodle.org/
+This file is part of Moodle - http://moodle.org/
 
-    Moodle is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+Moodle is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    Moodle is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+Moodle is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License
+along with Moodle. If not, see
+<http: //www.gnu.org/licenses />.
 }}
 {{!
-    @template format_flexsections/local/content
+@template format_flexsections/local/content
 
-    Displays the complete course format.
+Displays the complete course format.
 
-    Example context (json):
-    {
-        "title": "Course",
-        "initialsection": {
-            "num": 0,
-            "id": 34,
-            "cmlist": {
-                "cms": [
-                    {
-                        "cmitem": {
-                            "cmformat": {
-                                "cmname": {"displayvalue": "<a class=\"aalink\" href=\"#\"><span class=\"instancename\">Forum example</span></a>"},
-                                "hasname": "true"
-                            },
-                            "cmid": 3,
-                            "anchor": "module-3",
-                            "module": "forum",
-                            "extraclasses": "newmessages"
-                        }
-                    }
-                ],
-                "hascms": true
-            },
-            "iscurrent": true,
-            "summary": {
-                "summarytext": "Summary text!"
-            }
-        },
-        "sections": [
-            {
-                "num": 1,
-                "id": 35,
-                "header": {
-                    "title": "Section title",
-                    "url": "#"
-                },
-                "cmlist": {
-                    "cms": [
-                        {
-                            "cmitem": {
-                                "cmformat": {
-                                    "cmname": {"displayvalue": "<a class=\"aalink\" href=\"#\"><span class=\"instancename\">Another forum</span></a>"},
-                                    "hasname": "true"
-                                },
-                                "cmid": 4,
-                                "anchor": "module-4",
-                                "module": "forum",
-                                "extraclasses": "newmessages"
-                            }
-                        }
-                    ],
-                    "hascms": true
-                },
-                "iscurrent": true,
-                "summary": {
-                    "summarytext": "Summary text!"
-                }
-            }
-        ],
-        "format": "flexsections",
-        "sectionreturn": 1
-    }
+Example context (json):
+{
+"title": "Course",
+"initialsection": {
+"num": 0,
+"id": 34,
+"cmlist": {
+"cms": [
+{
+"cmitem": {
+"cmformat": {
+"cmname": {"displayvalue": "<a class=\"aalink\" href=\"#\"><span class=\"instancename\">Forum example</span></a>"},
+"hasname": "true"
+},
+"id": 3,
+"anchor": "module-3",
+"module": "forum",
+"extraclasses": "newmessages"
+}
+}
+],
+"hascms": true
+},
+"iscurrent": true,
+"summary": {
+"summarytext": "Summary text!"
+}
+},
+"sections": [
+{
+"num": 1,
+"id": 35,
+"header": {
+"title": "Section title",
+"url": "#"
+},
+"cmlist": {
+"cms": [
+{
+"cmitem": {
+"cmformat": {
+"cmname": {"displayvalue": "<a class=\"aalink\" href=\"#\"><span class=\"instancename\">Another forum</span></a>"},
+"hasname": "true"
+},
+"id": 4,
+"anchor": "module-4",
+"module": "forum",
+"extraclasses": "newmessages"
+}
+}
+],
+"hascms": true
+},
+"iscurrent": true,
+"summary": {
+"summarytext": "Summary text!"
+}
+}
+],
+"format": "flexsections",
+"sectionreturn": 1
+}
 }}
+{{#backtocourse}}
+<div class="header backto">
+  <!--   <a href="{{url}}">
+        <i class="icon fa fa-arrow-up fa-fw " aria-hidden="true"></i>
+        {{#str}}backtocourse, format_flexsections, {{coursename}} {{/str}}
+    </a>-->
+</div> 
+{{/backtocourse}}
+{{#backtosection}}
+<div class="header backto">
+<!--     <a href="{{url}}">
+        <i class="icon fa fa-arrow-up fa-fw " aria-hidden="true"></i>
+        {{#str}}backtosection, format_flexsections, {{sectionname}} {{/str}}
+    </a>-->
+</div> 
+{{/backtosection}}
+{{#collapsemenu}}
+<div class="flex-fill d-flex justify-content-end mr-2 align-self-start mt-2">
+    <a id="collapsesections" class="section-collapsemenu" href="#" aria-expanded="true" role="button"
+        data-toggle="toggleall">
+        <span class="collapseall text-nowrap">{{#str}}collapseall{{/str}}</span>
+        <span class="expandall text-nowrap">{{#str}}expandall{{/str}}</span>
+    </a>
+</div>
+{{/collapsemenu}}
 
-{{> format_flexsections/local/navigate_back_to }}
+{{#hasnavigation}}
+<div class="singlesection-card-wrapper">
 
-<div id="{{uniqid}}-course-format" data-flexsections-accordion="{{{accordion}}}"
-        data-flexsections-mainsection="{{mainsection}}">
+    {{#singlesection}}
+
+        {{#copysectionenable}}
+            <button class="editing_addsubsection ml-auto" data-handler="selectCourseForSection"
+               data-sectionid="{{id}}" role="menuitem" tabindex="-1" title="{{#str}}copysection, community_sharewith{{/str}}">
+                <i class="fa-light fa-copy"></i>
+            </button>
+        {{/copysectionenable}}
+
+        {{#header}}
+        <div class="section-header d-flex">
+            <div class="singlesection-card card-main-content mt-1 d-flex flex-column justify-content-between position-relative
+                {{^showsectionstatus}}w-100{{/showsectionstatus}}" >
+                {{#recentlyviewed}}
+                <div class="recently-viewed d-flex align-items-center justify-content-center">
+                    <i class="fa-light fa-users"></i>
+                </div>
+                {{/recentlyviewed}}
+                <div class="card-img" role="presentation" {{#image}}style="background: url('{{{image}}}'){{^imggenerated}} no-repeat center/contain {{/imggenerated}} {{#imggenerated}}  center/cover {{/imggenerated}}"{{/image}}></div>
+
+                <div class="card-header-fade p-1">
+                    {{$ core_courseformat/local/content/section/badges }}
+                        {{> core_courseformat/local/content/section/badges }}
+                    {{/ core_courseformat/local/content/section/badges }}
+                    {{#summary}}
+                        {{#summarytext}}
+                            <div class="summary">
+                                {{{summarytext}}}
+                            </div>
+                        {{/summarytext}}
+                    {{/summary}}
+
+                </div>
+
+                <div class="card-header bg-transparent p-0 border-0">
+                    {{> format_flexsections/local/content/section/availability }}
+                    {{# format_flexsections/local/content/completion }}
+                    <div class="p-2">
+                        {{> format_flexsections/local/content/completion }}
+                    </div>
+                    {{/ format_flexsections/local/content/completion }}
+                </div>
+            </div>
+
+            {{#showsectionstatus}}
+                <div class="info-block" id="sectionStatus"></div>
+            {{/showsectionstatus}}
+        </div>
+        {{/header}}
+           {{#showsingleuploadsection}}
+                    <div class="uploadsectionimage">
+                        <label data-toggle="tooltip" data-placement="bottom" title="{{#str}}resolution_must, theme_petel{{/str}}"
+                               for="uploadsectionimage" id="uploadsectionimagelabel"
+                               class="btn btn-sm btn-link d-flex align-items-center mb-0 px-0 d-inline-flex">
+                            <i class="fa-light fa-pencil" aria-hidden="true"></i>
+                            <span class="btn-text ml-2">{{#str}} editimage, format_flexsections {{/str}}</span>
+                        </label>
+
+                        <input class="form-control-file" id="uploadsectionimage" data-sectionid="{{id}}" data-contextid="{{contextid}}" style="visibility:hidden; width: 0; height: 0">
+                    </div>
+                {{/showsingleuploadsection}}
+    {{/singlesection}}
+</div>
+{{/hasnavigation}}
+{{^hasnavigation}}
+    <div id="courseheaderimage" class="course-image mb-3" style="background-image: url({{courseimageurl}});">
+
+        {{#showuploadcourseimage}}
+            <div class="uploadcourseimage">
+                <label data-toggle="tooltip" data-placement="bottom" title="{{#str}}resolution_must, theme_petel{{/str}}"
+                       for="uploadcourseimage" id="uploadcourseimagelabel"
+                       class="btn btn-sm btn-outline-secondary d-flex align-items-center mb-0 px-3">
+                    <i class="fa-light fa-pencil" aria-hidden="true"></i>
+                    <span class="btn-text ml-2">{{#str}} editimage, format_flexsections {{/str}}</span>
+                </label>
+
+                <input class="form-control-file" id="uploadcourseimage" data-courseid="{{courseid}}" data-contextid="{{contextid}}" style="visibility:hidden; width: 0; height: 0">
+            </div>
+        {{/showuploadcourseimage}}
+
+        {{#coursecompletion}}
+            {{#modecircle}}
+                <div class="chart-wrapper p-2">
+                    <div class="svg-wrapper">
+                        <svg width="100%" height="100%" viewBox="0 0 40 40" class="donut">
+                            <circle class="donut-hole" cx="20" cy="20" r="15.91549430918954" fill="transparent"></circle>
+                            <circle class="donut-ring" cx="20" cy="20" r="15.91549430918954" fill="transparent" stroke-width="3.5">
+                            </circle>
+                            {{#rad2}}
+                                <circle class="donut-segment " cx="20" cy="20" r="15.91549430918954" fill="transparent"
+                                        stroke-width="3.5" stroke-dasharray="{{rad2}} {{rad1}}" stroke-dashoffset="25" stroke-linecap="round"></circle>
+                            {{/rad2}}
+                        </svg>
+                    </div>
+                    <div class="text text-center text-primary">
+                        {{#showpercentage}}
+                            {{#str}} section:completion:percentage, format_flexsections, { "percentage": {{#quote}}{{percentage}}{{/quote}} } {{/str}}
+                        {{/showpercentage}}
+                        {{#showcount}}
+                            {{#str}} section:completion:count, format_flexsections, { "completed": {{#quote}}{{completed}}{{/quote}}, "total": {{#quote}}{{total}}{{/quote}} } {{/str}}
+                        {{/showcount}}
+                    </div>
+                </div>
+            {{/modecircle}}
+            {{^modecircle}}
+                <div class="coursecompletion ml-auto">
+                    {{#iscomplete}}
+                        {{#pix}} i/checked, core, done {{/pix}}
+                        <span class="sr-only">{{#str}} completed, core {{/str}}</span>
+                    {{/iscomplete}}
+                    <div class="progress-wrapper p-2">
+                        <div class="progress mb-2">
+                            <div class="progress-bar bg-linkhover" role="progressbar" style="width: {{percentage}}%"
+                                 aria-valuenow="{{percentage}}" aria-valuemin="0" aria-valuemax="100">
+                            </div>
+                        </div>
+                        <p class="text-primary mb-0">
+                            {{#showpercentage}}
+                                {{#str}} course:completion:percentage, format_flexsections, { "percentage":
+                                    {{#quote}}{{percentage}}{{/quote}} } {{/str}}
+                            {{/showpercentage}}
+                            {{#showcount}}
+                                {{#str}} course:completion:count, format_flexsections, { "completed": {{#quote}}{{completed}}{{/quote}},
+                                    "total": {{#quote}}{{total}}{{/quote}} } {{/str}}
+                            {{/showcount}}
+                        </p>
+                    </div>
+                </div>
+            {{/modecircle}}
+        {{/coursecompletion}}
+
+    </div>
+    <div class="d-flex align-items-center justify-content-between">
+        {{{enrolkeybtn}}}
+        {{{coursesharedbutton}}}
+        <div class="d-flex align-items-center ml-auto">
+            {{{coursesearch}}}
+            {{{courselinks}}}
+        </div>
+    </div>
+{{/hasnavigation}}
+
+<div id="{{uniqid}}-course-format" {{#allowedediting}}class = "allowedediting"{{/allowedediting}}>
     <h2 class="accesshide">{{{title}}}</h2>
     {{{completionhelp}}}
     <ul class="{{format}} flexsections-level-0" data-for="course_sectionlist">
         {{#initialsection}}
             {{> format_flexsections/local/content/section }}
         {{/initialsection}}
-        {{#sections}}
-            {{> format_flexsections/local/content/section }}
-        {{/sections}}
+
+        {{#showsimplecards}}
+            <li class="card-deck dashboard-card-deck {{format}} px-2 pt-3" role="list">
+                {{#sections}}
+                    {{> format_flexsections/local/content/simplesection-card }}
+                {{/sections}}
+            </li>
+        {{/showsimplecards}}
+
+        {{#showcollapsebutton}}
+            {{> format_flexsections/collapsebutton }}
+        {{/showcollapsebutton}}
+
+        {{^showascard}}
+            {{#sections}}
+                {{> format_flexsections/local/content/section }}
+            {{/sections}}
+        {{/showascard}}
+
+
+
     </ul>
-    {{#hasnavigation}}
-        <div class="single-section">
-            {{#sectionnavigation}}
-                {{> format_flexsections/local/content/section }}
-            {{/sectionnavigation}}
-            <ul class="{{format}}">
-                {{#singlesection}}
-                    {{> format_flexsections/local/content/section }}
-                {{/singlesection}}
-            </ul>
-            {{#sectionselector}}
-                {{> format_flexsections/local/content/section }}
-            {{/sectionselector}}
+    {{#showascard}}
+        <div class="card-deck dashboard-card-deck {{format}} px-2" role="list" data-for="course_sectionlist">
+            {{#sections}}
+            {{> format_flexsections/local/content/section-card }}
+            {{/sections}}
         </div>
+    {{/showascard}}
+    {{#hasnavigation}}
+    <div class="single-section">
+        <ul class="{{format}}">
+            {{#singlesection}}
+                {{> format_flexsections/local/content/section }}
+            {{/singlesection}}
+        </ul>
+    </div>
     {{/hasnavigation}}
+    {{#numsections}}
+        {{> format_flexsections/local/content/addsection}}
+    {{/numsections}}
 </div>
+
 {{#js}}
-    require(['format_flexsections/local/content'], function(component) {
-        component.init('{{uniqid}}-course-format', {}, {{sectionreturn}});
-    });
+require(['format_flexsections/local/content'], function(component) {
+    component.init('{{uniqid}}-course-format', {}, {{sectionreturn}});
+});
 {{/js}}

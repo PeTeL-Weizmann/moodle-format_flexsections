@@ -81,9 +81,39 @@ class renderer extends section_renderer {
      * If the format is not compatible with the course index, this method will return an empty string.
      *
      * @param course_format $format the course format
-     * @return string the course index HTML.
+     * @return String the course index HTML.
      */
     public function course_index_drawer(course_format $format): ?String {
+        global $PAGE, $COURSE;
+
+        // PTL-9913.
+        $courseurl = (new \moodle_url('/course/view.php', ['id' => $COURSE->id]))->out(false);
+        $PAGE->requires->js_init_code("M.course = {id: `".$COURSE->id."`, name: `".$COURSE->fullname."`, url: `".$courseurl."`}");
+
+        // PTL-10105.
+        $hidesections = '[]';
+
+        $coursecontext = \context_course::instance($COURSE->id);
+        if (!has_capability('moodle/course:update', $coursecontext)){
+
+            $arr = [];
+            $courseformat = course_get_format($COURSE->id);
+            $modinfo = $courseformat->get_modinfo();
+            $sections = $modinfo->get_section_info_all();
+            foreach ($sections as $section) {
+                if (!$section->visible) {
+                    $arr[] = $section->id;
+                }
+            }
+
+            if (!empty($arr)) {
+                $hidesections = '[' . implode(',', $arr) . ']';
+            }
+        }
+
+
+        $PAGE->requires->js_init_code('M.hidesections = ' . $hidesections);
+
         if ($format->uses_course_index()) {
             include_course_editor($format);
             return $this->render_from_template('format_flexsections/local/courseindex/drawer', []);

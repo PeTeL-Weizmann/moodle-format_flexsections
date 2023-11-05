@@ -70,7 +70,7 @@
     role="treeitem"
     aria-owns="courseindexcollapse{{number}}"
 >
-    <div class="courseindex-item d-flex
+    <div class="courseindex-item d-flex align-items-center
             {{^visible}}dimmed{{/visible}}
             {{#hasrestrictions}}restrictions{{/hasrestrictions}}
             courseindex-section-title"
@@ -101,28 +101,27 @@
             data-action="togglecourseindexsection"
             data-for="section_title"
             tabindex="-1"
+            title="{{{title}}}"
         >
             {{{title}}}
         </a>
-        <span class="current-badge badge badge-primary ml-2 px-2 rounded-pill">
+        <span class="current-badge badge badge-primary ml-auto px-2 py-1 rounded-pill">
             {{highlighted}}
         </span>
-        <span class="courseindex-locked ml-1" data-for="cm_name">
+        <span class="courseindex-locked ml-auto" data-for="cm_name">
             {{#pix}} t/locked, core {{/pix}}
         </span>
-        <span class="dragicon ml-auto">{{#pix}}i/dragdrop{{/pix}}</span>
+        <span class="dragicon ml-1">{{#pix}}i/dragdrop{{/pix}}</span>
     </div>
     <div id="courseindexcollapse{{number}}"
         class="courseindex-item-content collapse {{^indexcollapsed}}show{{/indexcollapsed}} pb-0"
         aria-labelledby="courseindexsection{{number}}" role="group"
     >
-        {{^hidecmsinindex}}
         <ul class="courseindex-sectioncontent unlist" data-for="cmlist" data-id="{{id}}" role="group">
             {{#cms}}
-            {{> core_courseformat/local/courseindex/cm }}
+            {{> format_flexsections/local/courseindex/cm }}
             {{/cms}}
         </ul>
-        {{/hidecmsinindex}}
         <div class="courseindex-sectioncontent-children ml-2" data-for="subsectionlist" data-parent="{{id}}" role="tree">
             {{#children}}
                 {{> format_flexsections/local/courseindex/section }}

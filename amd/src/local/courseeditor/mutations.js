@@ -50,28 +50,4 @@ export default class extends Mutations {
         const updates = await this._callEditWebservice('section_add_subsection', course.id, [], parentSectionId);
         stateManager.processUpdates(updates);
     }
-
-    /**
-     * Add a new section to a specific course location.
-     *
-     * @param {StateManager} stateManager the current state manager
-     * @param {number} parentSectionId optional the target section id
-     */
-    async insertSubSection(stateManager, parentSectionId) {
-        const course = stateManager.get('course');
-        const updates = await this._callEditWebservice('section_insert_subsection', course.id, [], parentSectionId);
-        stateManager.processUpdates(updates);
-    }
-
-    /**
-     * Switch between section being displayed on a separate page vs on the same page
-     *
-     * @param {StateManager} stateManager the current state manager
-     * @param {number} sectionId
-     */
-    async sectionSwitchCollapsed(stateManager, sectionId) {
-        const course = stateManager.get('course');
-        const updates = await this._callEditWebservice('section_switch_collapsed', course.id, [sectionId]);
-        stateManager.processUpdates(updates);
-    }
 }

@@ -1,0 +1,49 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template format_flexsections/sectionstatus
+    Section complition/submission status.
+}}
+
+{{#cmlastaccess}}
+    <span class="cmlastaccess">{{#str}} cmlastaccess, format_flexsections {{/str}}</span>
+    <a class="cmlastaccess-link ml-2" href="{{{cmurl}}}">{{cmname}}</a>
+{{/cmlastaccess}}
+
+{{#firstrow}}
+<div class="d-flex align-items-center mb-3" id="firstrow">
+    <i class="fa-light fa-hourglass-start info-block-icon text-primary d-flex align-items-center justify-content-center"></i>
+    <span class="info-block-value text-secondary px-2">{{value}}</span>
+    <span class="info-block-text">{{label}}</span>
+</div>
+{{/firstrow}}
+
+{{#secondrow}}
+<div class="d-flex align-items-center mb-3" id="secondrow">
+    <i class="fa-light fa-triangle-exclamation info-block-icon text-danger"></i>
+    <span class="info-block-value text-secondary px-2">{{value}}</span>
+    <span class="info-block-text">{{label}}</span>
+</div>
+{{/secondrow}}
+
+{{#thirdrow}}
+<div class="d-flex align-items-center mb-3" id="thirdrow">
+    <i class="fa-light fa-alarm-clock info-block-icon text-info"></i>
+    <span class="info-block-value text-secondary px-2">{{value}}</span>
+    <span class="info-block-text">{{label}}</span>
+</div>
+{{/thirdrow}}

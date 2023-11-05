@@ -100,12 +100,24 @@
 
 }}
 <div id="{{uniqid}}-course-index" class="courseindex {{#editmode}} editing {{/editmode}}" role="tree">
+
+    <div id="{{uniqid}}-courseindexcourselink" class="text-center"></div>
+
     {{#sections}}
     {{> format_flexsections/local/courseindex/section }}
     {{/sections}}
 </div>
 {{#js}}
-require(['format_flexsections/local/courseindex/courseindex'], function(component) {
+require(['jquery', 'format_flexsections/local/courseindex/courseindex'], function($, component) {
     component.init('{{uniqid}}-course-index');
+
+    // PTL-9913.
+    $('#{{uniqid}}-courseindexcourselink').html('<a href="'+M.course.url+'" class="h3">'+M.course.name+'</a>');
+
+    // PTL-10105.
+    M.hidesections.forEach((sectionid) => {
+        $('#{{uniqid}}-course-index-section-' + sectionid).hide();
+    });
+
 });
 {{/js}}

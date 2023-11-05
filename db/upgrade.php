@@ -29,7 +29,53 @@
  * @return bool result
  */
 function xmldb_format_flexsections_upgrade($oldversion) {
-    global $CFG, $DB;
+    global $DB;
+
+    $dbman = $DB->get_manager();
+
+    if ($oldversion < 2023062305) {
+
+        // Drop old tables.
+        $table = new xmldb_table('flexsections_lastaccess');
+
+        if ($dbman->table_exists('flexsections_lastaccess')) {
+            $dbman->drop_table($table);
+        }
+
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('courseid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('sectionid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('cmid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('timeaccess', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+
+        $dbman->create_table($table);
+
+        // Set indexes.
+        $indexuserid = new xmldb_index('userid', XMLDB_INDEX_NOTUNIQUE, array('userid'));
+        $dbman->add_index($table, $indexuserid);
+
+        $indexcourseid = new xmldb_index('courseid', XMLDB_INDEX_NOTUNIQUE, array('courseid'));
+        $dbman->add_index($table, $indexcourseid);
+
+        $indexsectionid = new xmldb_index('sectionid', XMLDB_INDEX_NOTUNIQUE, array('sectionid'));
+        $dbman->add_index($table, $indexsectionid);
+
+        $indexcmid = new xmldb_index('cmid', XMLDB_INDEX_NOTUNIQUE, array('cmid'));
+        $dbman->add_index($table, $indexcmid);
+
+        foreach ($DB->get_records('block_recentlyaccesseditems') as $item) {
+            $data = new \stdClass();
+
+            $data->userid = $item->userid;
+            $data->courseid = $item->courseid;
+            $data->cmid = $item->cmid;
+            $data->timeaccess = $item->timeaccess;
+
+            $DB->insert_record('flexsections_lastaccess', $data);
+        }
+    }
 
     return true;
 }

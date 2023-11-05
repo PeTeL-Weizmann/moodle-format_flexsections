@@ -15,31 +15,51 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template format_flexsections/local/content/addsection
+    @template core_courseformat/local/content/addsection
 
-    Link to inesert a section
+    Displays the add section button inside a course.
 
     Example context (json):
     {
+        "showaddsection": true,
+        "id": 42,
+        "insertafter": true,
+        "num": 0,
+        "increase": {
+            "url": "#"
+        },
+        "decrease": {
+            "url": "#"
+        },
+        "addsections": {
+            "url": "#",
+            "title": "Add section",
+            "newsection": 3
+        }
     }
 }}
 {{#showaddsection}}
-<div class="mdl-left py-2 changenumsections bulk-hidden">
+<div class="mdl-left pt-3 pb-2 changenumsections d-flex">
+    {{#increase}}
+    <a href="{{{url}}}" class="increase-sections">
+        {{#pix}}t/switch_plus, moodle, {{#str}} increasesections, moodle {{/str}}{{/pix}}
+    </a>
+    {{/increase}}
+    {{#decrease}}
+    <a href="{{{url}}}" class="reduce-sections">
+        {{#pix}}t/switch_minus, moodle, {{#str}} reducesections, moodle {{/str}}{{/pix}}
+    </a>
+    {{/decrease}}
     {{#addsections}}
     <a
         href="{{{url}}}"
-        class="add-sections"
+        class="add-sections p-3"
         data-add-sections="{{title}}"
         data-new-sections="{{newsection}}"
-        {{#insertparentid}}
-            data-parentid="{{insertparentid}}"
-            data-action-flexsections="insertSubSection"
-        {{/insertparentid}}
-        {{^insertparentid}}
-            data-id="{{id}}"
-            data-action="addSection"
-        {{/insertparentid}}
+        data-action="addSection"
+        {{#insertafter}} data-id="{{id}}" {{/insertafter}}
     >
+        <i class="fa-regular fa-plus mr-2"></i>
         {{title}}
     </a>
     {{/addsections}}

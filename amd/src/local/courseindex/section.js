@@ -14,6 +14,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 import BaseSection from "core_courseformat/local/courseindex/section";
+import jQuery from 'jquery';
 
 /**
  * Course index section component.
@@ -50,5 +51,19 @@ export default class Component extends BaseSection {
     configDragDrop(sectionitem) {
         sectionitem.draggable = false; // <---- my modification - disable drag&drop of sections for now.
         super.configDragDrop(sectionitem);
+    }
+
+    /**
+     * Initial state ready method.
+     *
+     * @param {Object} state the state data
+     */
+    stateReady(state) {
+        super.stateReady(state);
+        let id = this.element.dataset.id;
+
+        setTimeout(function() {
+            jQuery('*[data-cmlistid="'+id+'"]').find('.loading').remove();
+        }, 500);
     }
 }

@@ -330,11 +330,6 @@ export default class extends BaseComponent {
                 `${links[i].getAttribute('data-parents')},`.match(re)) {
                 this._disableLink(links[i]);
             }
-            // Disable moving to the depth that exceeds the maxsectiondepth setting.
-            const depth = (`${links[i].getAttribute('data-parents')}`.match(/,/g) || []).length;
-            if (data.maxsectiondepth && depth >= data.maxsectiondepth) {
-                this._disableLink(links[i]);
-            }
         }
 
         // TODO.
@@ -384,7 +379,7 @@ export default class extends BaseComponent {
     }
 
     /**
-     * Handle a request to add a subsection as the last child of the parent
+     * Handle a move request to add a subsection.
      *
      * @param {Element} target the dispatch action element
      * @param {Event} event the triggered event
@@ -392,27 +387,5 @@ export default class extends BaseComponent {
     _requestAddSubSection(target, event) {
         event.preventDefault();
         this.reactive.dispatch('addSubSection', parseInt(target.dataset.parentid ?? 0));
-    }
-
-    /**
-     * Handle a request to add a subsection as the first child of the parent
-     *
-     * @param {Element} target the dispatch action element
-     * @param {Event} event the triggered event
-     */
-    _requestInsertSubSection(target, event) {
-        event.preventDefault();
-        this.reactive.dispatch('insertSubSection', parseInt(target.dataset.parentid ?? 0));
-    }
-
-    /**
-     * Handle a request to switch the section mode (displayed on the same page vs as a link).
-     *
-     * @param {Element} target the dispatch action element
-     * @param {Event} event the triggered event
-     */
-    _requestSectionSwitchCollapsed(target, event) {
-        event.preventDefault();
-        this.reactive.dispatch('sectionSwitchCollapsed', target.dataset.id ?? 0);
     }
 }

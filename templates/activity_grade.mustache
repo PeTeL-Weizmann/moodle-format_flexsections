@@ -1,0 +1,87 @@
+{{!
+This file is part of Moodle - http://moodle.org/
+
+Moodle is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Moodle is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Moodle. If not, see
+<http: //www.gnu.org/licenses />.
+}}
+
+{{#submissionstatus}}
+    {{#tooltip}}
+    <div data-toggle="tooltip" data-placement="bottom" data-original-title="{{tooltip}}" title="{{tooltip}}"
+        class="d-flex align-items-center {{modstyle}}">
+        {{{modstatus}}}
+    </div>
+    {{/tooltip}}
+
+    {{^tooltip}}
+    <div tabindex="0" class="d-flex align-items-center justify-content-start submissionstatus ">
+        {{{modstatus}}}
+        {{{modicon}}}
+    </div>
+    {{/tooltip}}
+{{/submissionstatus}}
+
+{{#gradestatus}}
+<div class="gradestatus-wrapper d-block d-md-flex align-items-center justify-content-end flex-wrap">
+
+    <div class="studentfailed d-flex align-items-center mr-3 mr-md-0">
+        {{#student_failed}}
+            <i class="fa-light text-danger fa-triangle-exclamation d-flex mr-2"></i>
+            {{#str}}studentfailed, format_flexsections, {{student_failed}}{{/str}}
+        {{/student_failed}}
+    </div>
+    {{#student_failed}}
+    <div class="divider d-none d-md-block"></div>
+    {{/student_failed}}
+    <div tabindex="0" class="gradestatus d-flex align-items-center">
+        <a class="grades mr-2 " target="__blank" href="{{{url}}}">{{#str}}grades{{/str}}</a>
+        <div class="progress ml-1" style="min-width: 6rem;" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="{{tooltip}}" title = "">
+            {{#segment_gray}}
+                <div class="progress-bar bg-gray text-center" role="progressbar" style="width: {{segment_gray_percent}}%" aria-valuenow="{{segment_gray}}" aria-valuemin="0"
+                     aria-valuemax="{{countmaxusers}}">
+                    {{segment_gray}}
+                </div>
+            {{/segment_gray}}
+            {{! no blue, it will be displayed as gray }}
+            {{#segment_blue}}
+                <div class="progress-bar bg-blue text-center" role="progressbar" style="width: {{segment_blue_percent}}%" aria-valuenow="{{segment_blue}}" aria-valuemin="0"
+                     aria-valuemax="{{countmaxusers}}">
+                    {{segment_blue}}
+                </div>
+            {{/segment_blue}}
+
+            {{#segment_orange}}
+                <div class="progress-bar bg-orange text-center" role="progressbar" style="width: {{segment_orange_percent}}%" aria-valuenow="{{segment_orange}}" aria-valuemin="0"
+                     aria-valuemax="{{countmaxusers}}">
+                    {{segment_orange}}
+                </div>
+            {{/segment_orange}}
+
+            {{#segment_red}}
+                <div class="progress-bar bg-danger text-center" role="progressbar" style="width: {{segment_red_percent}}%" aria-valuenow="{{segment_red}}" aria-valuemin="0"
+                     aria-valuemax="{{countmaxusers}}">
+                    {{segment_red}}
+                </div>
+            {{/segment_red}}
+
+            {{#segment_green}}
+                <div class="progress-bar bg-success text-center" role="progressbar" style="width: {{segment_green_percent}}%" aria-valuenow="{{segment_green}}" aria-valuemin="0"
+                     aria-valuemax="{{countmaxusers}}">
+                    {{segment_green}}
+                </div>
+            {{/segment_green}}
+        </div>
+    </div>
+</div>
+{{/gradestatus}}

@@ -16,6 +16,15 @@
 
 namespace format_flexsections\output\courseformat\content\section;
 
+use coding_exception;
+use context_course;
+use core_geopattern;
+use moodle_url;
+use section_info;
+use stored_file;
+
+require_once $CFG->dirroot . "/course/format/flexsections/locallib.php";
+
 /**
  * Contains the section header output class.
  *
@@ -24,6 +33,13 @@ namespace format_flexsections\output\courseformat\content\section;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class header extends \core_courseformat\output\local\content\section\header {
+
+    /**
+     * In-process cache of section images
+     *
+     * @var stored_file[]
+     */
+    private static $images = [];
 
     /**
      * Template name
@@ -42,45 +58,116 @@ class header extends \core_courseformat\output\local\content\section\header {
      * @return \stdClass
      */
     public function export_for_template(\renderer_base $output): \stdClass {
-
+        global $PAGE;
         $data = parent::export_for_template($output);
-        $data->indenttitle = false;
-        $course = $this->format->get_course();
-
-        if ($this->section->collapsed == FORMAT_FLEXSECTIONS_COLLAPSED) {
+       // $this->section->coll
+        if ($this->section->collapsed == FORMAT_FLEXSECTIONS_COLLAPSED && !$PAGE->user_is_editing()) {
             // Do not display the collapse/expand caret for sections that are meant to be shown on a separate page.
             $data->headerdisplaymultipage = true;
             if ($this->format->get_viewed_section() != $this->section->section) {
                 // If the section is displayed as a link and we are not on this section's page, display it as a link.
-                $data->title = $output->section_title($this->section, $course);
-                $data->indenttitle = $this->title_needs_indenting();
+                $data->title = $output->section_title($this->section, $this->format->get_course());
             }
         }
 
-        $data->hidetitle = false;
-        if (!$course->showsection0title && $this->section->section === 0) {
-            // Do not display header title for the "General" section.
-            $data->hidetitle = true;
+        $data->url = course_get_url(
+           $this->section->course,
+           $this->section,
+        );
+
+        // Try and fetch the image.
+        $image = $this->get_section_image($this->section);
+        if (!is_null($image)) {
+            $data->image = moodle_url::make_pluginfile_url(
+                $image->get_contextid(),
+                $image->get_component(),
+                $image->get_filearea(),
+                $image->get_itemid(),
+                $image->get_filepath(),
+                $image->get_filename(),
+                false
+            )->out(false);
+
+            $data->imggenerated = false;
+        } else {
+            $pattern = new core_geopattern();
+            $pattern->setColor($this->get_course_colour());
+            $pattern->patternbyid($this->section->id);
+            $data->image = $pattern->datauri();
+
+            $data->imggenerated = true;
         }
 
         $data->headerdisplaymultipage = !empty($data->headerdisplaymultipage);
+
+        $data->recentlyviewed = format_flexsections_recently_viewed_section($this->section->id);
+
         return $data;
+    }
+    /**
+     * Generates a semi-random colour based on the course's ID
+     *
+     * @see \block_myoverview\output\courses_view::coursecolor()
+     * @return string
+     */
+    public function get_course_colour(): string {
+        // The colour palette is hardcoded for now. It would make sense to combine it with theme settings.
+        $basecolours = [
+            '#81ecec', '#74b9ff', '#a29bfe', '#dfe6e9', '#00b894',
+            '#0984e3', '#b2bec3', '#fdcb6e', '#fd79a8', '#6c5ce7'
+        ];
+
+        return $basecolours[$this->format->get_course()->id % 10];
     }
 
     /**
-     * Title needs indenting
+     * Fetch all the section images for the current course
      *
-     * Title displayed as a link needs indenting if some siblings are collpased and some are not.
-     *
-     * @return bool
+     * @return stored_file[] Array of image files
      */
-    protected function title_needs_indenting(): bool {
-        $hassections = [FORMAT_FLEXSECTIONS_COLLAPSED => false, FORMAT_FLEXSECTIONS_EXPANDED => 0];
-        foreach ($this->format->get_modinfo()->get_section_info_all() as $section) {
-            if ($section->section && $section->parent == $this->section->parent && $this->format->is_section_visible($section)) {
-                $hassections[$section->collapsed] = true;
+    public function get_section_images(): array {
+
+        $course = $this->format->get_course();
+
+        if (!array_key_exists($course->id, self::$images)) {
+            $context = context_course::instance($course->id);
+            $filestorage = get_file_storage();
+
+            try {
+                $files = $filestorage->get_area_files($context->id,
+                    'format_flexsections',
+                    FORMAT_FLEXSECTIONS_FILEAREA_IMAGE,
+                    false,
+                    'itemid, filepath, filename',
+                    false
+                );
+            } catch (coding_exception $e) {
+                return [];
+            }
+
+            self::$images[$course->id] = [];
+
+            foreach ($files as $file) {
+                self::$images[$course->id][$file->get_itemid()] = $file;
             }
         }
-        return $hassections[FORMAT_FLEXSECTIONS_EXPANDED] && $hassections[FORMAT_FLEXSECTIONS_COLLAPSED];
+
+        return self::$images[$course->id];
+    }
+
+    /**
+     * Fetch the image file for a given section
+     *
+     * @param section_info $section
+     * @return stored_file|null
+     */
+    public function get_section_image(section_info $section): ?stored_file {
+        $images = $this->get_section_images();
+
+        if (array_key_exists($section->id, $images)) {
+            return $images[$section->id];
+        }
+
+        return null;
     }
 }

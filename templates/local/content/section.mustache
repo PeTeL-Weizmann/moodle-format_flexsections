@@ -41,7 +41,7 @@
                             "cmname": {"displayvalue": "<a class=\"aalink\" href=\"#\"><span class=\"instancename\">Forum example</span></a>"},
                             "hasname": "true"
                         },
-                        "cmid": 3,
+                        "id": 3,
                         "module": "forum",
                         "anchor": "activity-3",
                         "extraclasses": "newmessages"
@@ -53,7 +53,7 @@
                             "cmname": {"displayvalue": "<a class=\"aalink\" href=\"#\"><span class=\"instancename\">Another forum</span></a>"},
                             "hasname": "true"
                         },
-                        "cmid": 4,
+                        "id": 4,
                         "anchor": "activity-4",
                         "module": "assign",
                         "extraclasses": ""
@@ -91,31 +91,17 @@
 <ul>
 {{/testingonly-make-mustache-lint-happy}}
 
-<li id="section-{{num}}"
-    class="section course-section main {{#onlysummary}} section-summary {{/onlysummary}} clearfix
-            {{#ishidden}} hidden {{/ishidden}} {{#iscurrent}} current {{/iscurrent}}
-            {{#isstealth}} orphaned {{/isstealth}}"
-    data-sectionid="{{num}}"
-    data-sectionreturnid="{{sectionreturnid}}"
-    data-for="section"
-    data-id="{{id}}"
-    data-number="{{num}}"
->
-    <div class="course-section-header d-flex"
-        data-for="section_title"
-        data-id="{{id}}"
-        data-number="{{num}}"
-    >
-        {{$ core_courseformat/local/content/section/content }}
-            {{> format_flexsections/local/content/section/content }}
-       {{/ core_courseformat/local/content/section/content }}
+{{< core_courseformat/local/content/section }}
 
-    </div>
+    {{$ core_courseformat/local/content/section/content }}
+        {{> format_flexsections/local/content/section/content }}
+    {{/ core_courseformat/local/content/section/content }}
 
-    {{#addsectionafter}}
-        {{> format_flexsections/local/content/addsection}}
-    {{/addsectionafter}}
-</li>
+    {{$ core_courseformat/local/content/section/header }}
+        {{> format_flexsections/local/content/section/header }}
+    {{/ core_courseformat/local/content/section/header }}
+
+{{/ core_courseformat/local/content/section }}
 
 {{#testingonly-make-mustache-lint-happy}}
 </ul>

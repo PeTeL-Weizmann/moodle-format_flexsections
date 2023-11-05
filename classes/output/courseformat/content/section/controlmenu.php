@@ -48,12 +48,12 @@ class controlmenu extends \core_courseformat\output\local\content\section\contro
      * @return array of edit control items
      */
     public function section_control_items() {
+        global $PAGE;
 
         $format = $this->format;
         $section = $this->section;
         $course = $format->get_course();
         $sectionreturn = $format->get_section_number();
-        $sectiondepth = $format->get_section_depth($section);
 
         $coursecontext = context_course::instance($course->id);
 
@@ -66,9 +66,7 @@ class controlmenu extends \core_courseformat\output\local\content\section\contro
 
         $controls = [];
 
-        if (has_capability('moodle/course:update', $coursecontext) && $section->section &&
-                $sectiondepth < $format->get_max_section_depth() &&
-                (!$section->collapsed || $section->section == $this->format->get_viewed_section())) {
+        if (has_capability('moodle/course:update', $coursecontext) && $section->section) {
             $addsubsectionurl = new \moodle_url($url, ['addchildsection' => $section->section]);
             $controls['addsubsection'] = [
                 'url' => $addsubsectionurl,
@@ -76,7 +74,7 @@ class controlmenu extends \core_courseformat\output\local\content\section\contro
                 'name' => get_string('addsubsection', 'format_flexsections'),
                 'pixattr' => ['class' => ''],
                 'attr' => [
-                    'class' => 'editing_addsubsection',
+                    'class' => '',
                     'data-action-flexsections' => 'addSubSection',
                     'data-parentid' => $section->id,
                 ],
@@ -113,7 +111,7 @@ class controlmenu extends \core_courseformat\output\local\content\section\contro
                 ];
             }
         }
-
+/* Disable sectionSwitchCollapsed (each section has separate page).
         if ($section->section && has_capability('moodle/course:update', $coursecontext) &&
                 $section->section != $this->format->get_viewed_section()) {
             $collapseurl = new \moodle_url($url, ['switchcollapsed' => $section->section]);
@@ -140,7 +138,7 @@ class controlmenu extends \core_courseformat\output\local\content\section\contro
                 ];
             }
         }
-
+*/
         if ($section->parent && has_capability('moodle/course:update', $coursecontext) &&
                 $section->section != $this->format->get_viewed_section()) {
             $mergeupurl = new \moodle_url($url, ['mergeup' => $section->section]);
@@ -171,6 +169,45 @@ class controlmenu extends \core_courseformat\output\local\content\section\contro
                     'data-id' => $section->id,
                     'data-ctxid' => context_course::instance($this->format->get_courseid())->id,
                 ],
+            ];
+        }
+
+        // Add copy section button.
+        if (has_capability('moodle/course:update', $coursecontext)) {
+            $controls['copysection'] = [
+                    'url' => 'javascript::void(0);',
+                    'icon' => 't/copy',
+                    'name' => get_string('copysection', 'community_sharewith'),
+                    'pixattr' => ['class' => ''],
+                    'attr' => [
+                            'class' => '',
+                            'data-handler' => 'selectCourseForSection',
+                            'data-sectionid' => $section->id,
+                    ],
+            ];
+        }
+
+        // Editing_metadata.
+        if (has_capability('moodle/course:update', $coursecontext)) {
+            $editurl = new moodle_url('/local/metadata/index.php', [
+                    'id' => $section->id,
+                    'action' => 'sectiondata',
+                    'contextlevel' => 9200,
+                    'returnurl' => $PAGE->url,
+            ]);
+
+            $controls['metadata'] = [
+                    'url' => $editurl,
+                    'icon' => 't/edit',
+                    'iconcomponent' => '',
+                    'name' => get_string('contextname', 'metadatacontext_section'),
+                    'pixattr' => ['class' => ''],
+                    'attr' => [
+                            'class' => 'editing_metadata',
+                            'data-action-flexsections' => 'editing_metadata',
+                            'data-id' => $section->id,
+                            'target'=>'_blank'
+                    ],
             ];
         }
 
